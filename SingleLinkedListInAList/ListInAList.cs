@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SingleLinkedListInAList
 {
@@ -38,10 +35,10 @@ namespace SingleLinkedListInAList
             }
             else
             {
-                if ((count + 1) / listCount / listCount > itemsPerListToNumListsRatio)
+                if ((count + 1.0) / listCount / listCount > itemsPerListToNumListsRatio)
                 {
                     var temp = first;
-                    for (int i = 0; i < listCount; i++)
+                    while (temp.Next != null)
                     {
                         temp = temp.Next;
                     }
@@ -64,6 +61,18 @@ namespace SingleLinkedListInAList
             }
             count++;
         }
+
+        public T GetAt(int index)
+        {
+            var temp = first;
+            for (int i = 0; i < pos[index].PosOuter; i++)
+            {
+                temp = temp.Next;
+            }
+            return temp.Element.GetAt(pos[index].PosInner);
+        }
+
+        public int Count { get { return count; } private set { count = value; } }
 
         class SimpleSingleLinkedList<E>
         {

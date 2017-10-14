@@ -1,1 +1,4 @@
-.vs/SingleLinkedListInAList/v14/.suo
+.vs
+SingleLinkedListInAList/Properties
+SingleLinkedListInAList/obj
+SingleLinkedListInAList/bin

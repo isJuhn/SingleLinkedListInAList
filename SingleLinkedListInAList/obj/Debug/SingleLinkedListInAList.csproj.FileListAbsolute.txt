@@ -1,1 +1,0 @@
-D:\C#\Git\Repos\SingleLinkedListInAList\SingleLinkedListInAList\bin\Debug\SingleLinkedListInAList.exe.config

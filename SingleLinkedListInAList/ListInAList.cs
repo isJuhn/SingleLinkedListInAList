@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace SingleLinkedListInAList
 {
-    class ListInAList<T> //: IList<T>, System.Collections.IList, IReadOnlyList<T>
+    class ListInAList<T> : IList<T>//, System.Collections.IList, IReadOnlyList<T>
     {
         private Dictionary<int, Pos> pos = new Dictionary<int, Pos>();
         private Node<SimpleSingleLinkedList<T>> first;
@@ -62,6 +63,23 @@ namespace SingleLinkedListInAList
             count++;
         }
 
+        public void Clear()
+        {
+            //todo
+        }
+
+        public bool Contains(T item)
+        {
+            return false;//todo
+        }
+
+        public void CopyTo(T[] array, int i)
+        {
+            //todo
+        }
+
+        public int Count { get { return count; } private set { count = value; } }
+
         public T GetAt(int index)
         {
             var temp = first;
@@ -72,9 +90,113 @@ namespace SingleLinkedListInAList
             return temp.Element.GetAt(pos[index].PosInner);
         }
 
-        public int Count { get { return count; } private set { count = value; } }
+        public IEnumerator<T> GetEnumerator()
+        {
+            return null;//todo
+        }
 
-        class SimpleSingleLinkedList<E>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return null;//todo
+        }
+
+        public int IndexOf(T element)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                if (GetAt(i).Equals(element))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        public void Insert(int index, T item)
+        {
+            if (index < 0 || index > count)
+                throw new IndexOutOfRangeException($"Index {index} outside of range 0 to {count}");
+            if (first == null)
+            {
+                first = new Node<SimpleSingleLinkedList<T>>(new SimpleSingleLinkedList<T>(item));
+                pos.Add(0, new Pos(0, 0));
+                listCount++;
+            }
+            else
+            {
+                if ((count + 1.0) / listCount / listCount > itemsPerListToNumListsRatio)
+                {
+                    var temp = first;
+                    while (temp.Next != null)
+                    {
+                        temp = temp.Next;
+                    }
+                    temp.Next = new Node<SimpleSingleLinkedList<T>>(new SimpleSingleLinkedList<T>(item));//ta bort tomma listor i removeAt
+                    pos.Add(count, new Pos(listCount, 0));
+                    listCount++;
+                }
+                else
+                {
+                    var temp = first;
+                    int i = 0;
+                    while (temp.Element.Count + 1 > itemsPerListToNumListsRatio * listCount)//fixa pos entries
+                    {
+                        temp = temp.Next;
+                        i++;
+                    }
+                    temp.Element.Add(item);
+                    for (int j = count; j > index; j--)
+                    {
+                        pos.Add(j, pos[j - 1]);
+                    }
+
+                    pos.Add(index, new Pos(i, temp.Element.Count));
+                }
+            }
+            count++;
+        }
+
+        public bool IsReadOnly
+        {
+            get;//todo
+        }
+
+        public bool Remove(T item)
+        {
+            return false;//todo
+        }
+
+        public void RemoveAt(int index)
+        {
+            //todo
+        }
+
+        public T this[int index]
+        {
+            get
+            {
+                if (index > count || index < 0)
+                {
+                    throw new IndexOutOfRangeException($"Index {index} outside of range 0 to {count}");
+                }
+                return GetAt(index);
+            }
+            set
+            {
+                if (index > count || index < 0)
+                {
+                    throw new IndexOutOfRangeException($"Index {index} outside of range 0 to {count}");
+                }
+                var temp = first;
+                for (int i = 0; i < pos[index].PosOuter; i++)
+                {
+                    temp = temp.Next;
+                }
+                temp.Element[pos[index].PosInner] = value;
+            }
+        }
+
+        public class SimpleSingleLinkedList<E>
         {
             private Node<E> first;
             private int count = 0;
@@ -107,6 +229,28 @@ namespace SingleLinkedListInAList
                 count++;
             }
 
+            public void Insert(int index, E item)
+            {
+                if (index < 0 || index > Count)
+                    throw new IndexOutOfRangeException($"Index {index} outside of range 0 to {count}");
+                if (first == null)
+                {
+                    Add(item);
+                }
+                else
+                {
+                    var temp = first;
+                    for (int i = 0; i < index - 1; i++)
+                    {
+                        temp = temp.Next;
+                    }
+                    var node = new Node<E>(item);
+                    node.Next = temp.Next;
+                    temp.Next = node;
+                }
+                count++;
+            }
+
             public void RemoveAt(int index)
             {
                 if (first == null || index >= count)
@@ -124,7 +268,7 @@ namespace SingleLinkedListInAList
 
             public E GetAt(int index)
             {
-                if (first == null || index >= count)
+                if (first == null || index >= count || index < 0)
                     throw new IndexOutOfRangeException($"index is out of range: {index} with a count of {count} items in the collection");
                 Node<E> temp = first;
                 for (int i = 0; i < index; i++)
@@ -135,6 +279,31 @@ namespace SingleLinkedListInAList
             }
 
             public int Count { get { return count; } private set { count = value; } }
+
+            public E this[int index]
+            {
+                get
+                {
+                    if (index > count || index < 0)
+                    {
+                        throw new IndexOutOfRangeException($"Index {index} outside of range 0 to {count}");
+                    }
+                    return GetAt(index);
+                }
+                set
+                {
+                    if (index > count || index < 0)
+                    {
+                        throw new IndexOutOfRangeException($"Index {index} outside of range 0 to {count}");
+                    }
+                    var temp = first;
+                    for (int i = 0; i < index; i++)
+                    {
+                        temp = temp.Next;
+                    }
+                    temp.Element = value;
+                }
+            }
         }
 
         class Node<E>

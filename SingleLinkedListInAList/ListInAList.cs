@@ -173,12 +173,18 @@ namespace SingleLinkedListInAList
 
         public bool IsReadOnly
         {
-            get;//todo
+            get { return false; }
         }
 
         public bool Remove(T item)
         {
-            return false;//todo
+            int index = IndexOf(item);
+            if (index != -1)
+            {
+                RemoveAt(index);
+                return true;
+            }
+            return false;
         }
 
         public void RemoveAt(int index)

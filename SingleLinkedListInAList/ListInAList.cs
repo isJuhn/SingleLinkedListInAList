@@ -65,17 +65,32 @@ namespace SingleLinkedListInAList
 
         public void Clear()
         {
-            //todo
+            first = null;
+            pos.Clear();
+            count = 0;
+            listCount = 0;
         }
 
         public bool Contains(T item)
         {
-            return false;//todo
+            foreach(var element in this)
+            {
+                if (item.Equals(element))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
-        public void CopyTo(T[] array, int i)
+        public void CopyTo(T[] array, int index)
         {
-            //todo
+            if (index < 0 || array == null || array.Length - index < count)
+                throw new IndexOutOfRangeException($"Index {index + count} outside of range {index} to {array.Length}");
+            for (int i = 0; i < count; i++)
+            {
+                array[index + i] = GetAt(i);
+            }
         }
 
         public int Count { get { return count; } private set { count = value; } }
@@ -92,12 +107,12 @@ namespace SingleLinkedListInAList
 
         public IEnumerator<T> GetEnumerator()
         {
-            return null;//todo
+            return (IEnumerator<T>)this;
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return null;//todo
+            return GetEnumerator();
         }
 
         public int IndexOf(T element)
